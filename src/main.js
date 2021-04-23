@@ -1,44 +1,38 @@
-import {createSiteMenuTemplate} from './view/site-menu.js';
-import {createCardTemplate} from './view/card.js';
-import {createSectionFilmsTemplate} from './view/section-films.js';
-import {createFilmsListTemplate} from './view/films-list.js';
-import {createUserRankTemplate} from './view/user-rank.js';
-import {createMoviesNumberTemplate} from './view/movies-number.js';
-import {createPopupTemplate} from './view/popup.js';
-import {createButtonTemplate} from './view/show-more-button.js';
+import NavMenuView from './view/nav-menu.js';
+import SortMenuView from './view/sort-menu.js';
+import CardView from './view/card.js';
+import SectionFilmsView from './view/section-films.js';
+import UserRankView from './view/user-rank.js';
+import FilmsListView from './view/films-list.js';
+import MoviesNumberView from './view/movies-number.js';
+import PopupView from './view/popup.js';
+import ShowMoreButtonView from './view/show-more-button.js';
 import {generateCard} from './mock/card.js';
-import {render} from './utils/util.js';
+import {renderElement, renderPosition} from './utils/util.js';
 import {drawFilmCards} from './utils/draw-film-cards.js';
-import {sortCards} from './view/sorting.js';
+import {sortCards, constsForSort} from './view/sorting.js';
 import {navigateCards} from './view/navigating.js';
+// import {cardsListHandler} from './view/cards-list-handler.js';
 
 const ALL_MOVIES = 19;
 const MOVIES_PER_STEP = 5;
-
 const cards = new Array(ALL_MOVIES).fill().map(generateCard);
-
+const pageBody = document.querySelector('body');
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterStatElement = document.querySelector('.footer__statistics');
 
-render(siteMainElement, createSiteMenuTemplate(cards));
-render(siteHeaderElement, createUserRankTemplate());
-render(siteFooterStatElement, createMoviesNumberTemplate());
-render(siteMainElement, createSectionFilmsTemplate());
+renderElement(siteHeaderElement, new UserRankView().getElement(), renderPosition.BEFOREEND);
+renderElement(siteMainElement, new NavMenuView(cards).getElement(), renderPosition.BEFOREEND);
+renderElement(siteMainElement, new SortMenuView().getElement(), renderPosition.BEFOREEND);
+renderElement(siteMainElement, new SectionFilmsView().getElement(), renderPosition.BEFOREEND);
+
 const sectionFilms = siteMainElement.querySelector('.films');
+renderElement(sectionFilms, new FilmsListView().getElement(), renderPosition.BEFOREEND);
+renderElement(siteFooterStatElement, new MoviesNumberView().getElement(), renderPosition.BEFOREEND);
 
-render(sectionFilms, createFilmsListTemplate());
-
-
-const filmsListContainers = sectionFilms.querySelector('.films-list__container');
-
+const filmsListContainers = document.querySelector('.films-list__container');
 const mainNavigationElement = document.querySelector('.main-navigation');
-
-const constsForSort = {
-  defaultSort: 'Sort by default',
-  dateSort: 'Sort by date',
-  ratingSort: 'Sort by rating',
-};
 
 const sortElement = siteMainElement.querySelector('.sort');
 sortElement.addEventListener('click', (evt) => {
@@ -64,51 +58,55 @@ mainNavigationElement.addEventListener('click', (evt) => {
 drawFilmCards(cards, Math.min(cards.length, MOVIES_PER_STEP), filmsListContainers);
 
 if (cards.length > MOVIES_PER_STEP) {
-  let renderedCardCount = MOVIES_PER_STEP;
+  let renderTemplateedCardCount = MOVIES_PER_STEP;
 
-  render(sectionFilms, createButtonTemplate());
+  renderElement(sectionFilms, new ShowMoreButtonView().getElement(), renderPosition.BEFOREEND);
 
   const loadMoreButton = sectionFilms.querySelector('.films-list__show-more');
 
   loadMoreButton.addEventListener('click', (evt) => {
     evt.preventDefault();
     cards
-      .slice(renderedCardCount, renderedCardCount + MOVIES_PER_STEP)
-      .forEach((card) => render(filmsListContainers, createCardTemplate(card)));
+      .slice(renderTemplateedCardCount, renderTemplateedCardCount + MOVIES_PER_STEP)
+      .forEach((card) => renderElement(filmsListContainers, new CardView(card).getElement(), renderPosition.BEFOREEND));
 
-    renderedCardCount += MOVIES_PER_STEP;
+    renderTemplateedCardCount += MOVIES_PER_STEP;
 
-    if (renderedCardCount >= cards.length) {
+    if (renderTemplateedCardCount >= cards.length) {
       loadMoreButton.remove();
     }
   });
 }
 
-const pageBody = document.querySelector('body');
-pageBody.classList.add('.hide-overflow');
-render(pageBody, createPopupTemplate(cards[0]));
+const cardsListHandler = (evt) => {
+  evt.preventDefault();
+  // target = ссылка на объект,
+  // на который было совершено нажатие
+  const target = evt.target;
+  const isTargetCorrect = target.classList.contains('film-card__title')
+    || target.classList.contains('film-card__poster')
+    || target.classList.contains('film-card__comments');
+  if (!isTargetCorrect) {
+    return false;
+  }
 
-const popupToggleClass = () => {
-  popup.classList.toggle('visually-hidden');
+  // id карточки на которую мы нажали
+  const cardId = target.closest('.film-card').dataset.id;
+  // находим в массиве карточек ту,
+  // на которую было совершено нажатие
+  const card = cards.find((card) => cardId === card.id);
+  const cardComponent = new PopupView(card);
+  const cardElement = cardComponent.getElement();
+  renderElement(pageBody, cardElement, renderPosition.BEFOREEND);
+  pageBody.classList.add('hide-overflow');
+
+  cardElement.querySelector('.film-details__close-btn').addEventListener('click', () => {
+    // удаляем элемент из разметки
+    cardElement.remove();
+    // удаляем экземпляр объекта
+    cardComponent.removeElement();
+    pageBody.classList.remove('hide-overflow');
+  });
 };
 
-const popup = document.querySelector('.film-details');
-const popupCloseBotton = popup.querySelector('.film-details__close-btn');
-popupCloseBotton.addEventListener('click', () => {
-  popupToggleClass();
-});
-
-const firstFilmPoster = document.querySelector('.film-card__poster');
-firstFilmPoster.addEventListener('click', () => {
-  popupToggleClass();
-});
-
-const filmCardTitle = document.querySelector('.film-card__title');
-filmCardTitle.addEventListener('click', () => {
-  popupToggleClass();
-});
-
-const filmCardComments = document.querySelector('.film-card__comments');
-filmCardComments.addEventListener('click', () => {
-  popupToggleClass();
-});
+filmsListContainers.addEventListener('click', cardsListHandler);

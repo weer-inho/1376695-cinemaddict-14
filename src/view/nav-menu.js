@@ -1,4 +1,6 @@
-export const createSiteMenuTemplate = (cards) => {
+import {createElement} from '../utils/util.js';
+
+export const createNavMenuTemplate = (cards) => {
   const watchlistCount = cards.filter((card) => card.isWatchlist).length;
   const watchedCount = cards.filter((card) => card.isWatched).length;
   const favoriteCount = cards.filter((card) => card.isFavorite).length;
@@ -11,11 +13,28 @@ export const createSiteMenuTemplate = (cards) => {
             <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favoriteCount}</span></a>
           </div>
           <a href="#stats" class="main-navigation__additional">Stats</a>
-        </nav>
-
-        <ul class="sort">
-          <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
-          <li><a href="#" class="sort__button">Sort by date</a></li>
-          <li><a href="#" class="sort__button">Sort by rating</a></li>
-        </ul>`;
+        </nav>`;
 };
+
+export default class SiteMenu {
+  constructor(cards) {
+    this._cards = cards;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createNavMenuTemplate(this._cards);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

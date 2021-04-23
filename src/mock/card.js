@@ -9,11 +9,14 @@ const generateDate = () => {
   return dayjs().add(daysGap, 'day').toDate();
 };
 
+const generateId = () => Math.random().toString();
+
 export const generateCard = () => {
   const date = generateDate();
   const posterName = posters[getRandomIntegerFloat(0, posters.length - 1)];
 
   return {
+    id: generateId(),
     title: getRandomArrayElement(titles),
     genres: randoms(genres),
     ratio: getRandomIntegerFloat(4, 9.9, 1),
