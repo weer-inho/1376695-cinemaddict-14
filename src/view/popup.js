@@ -1,3 +1,5 @@
+import {createElement} from '../utils/util.js';
+
 export const createPopupTemplate = (card) => {
   const {
     country,
@@ -146,3 +148,25 @@ export const createPopupTemplate = (card) => {
 </section>`;
 };
 
+export default class Popup {
+  constructor(cards) {
+    this._cards = cards;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._cards);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

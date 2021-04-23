@@ -1,5 +1,7 @@
+import {createElement} from '../utils/util.js';
+
 export const createCardTemplate = (card) => {
-  const {title, ratio, year, duration, genres, poster, description, comments, isWatchlist, isFavorite, isWatched} = card;
+  const {id, title, ratio, year, duration, genres, poster, description, comments, isWatchlist, isFavorite, isWatched} = card;
   const watchListClass = isWatchlist !== false
     ? 'film-card__controls-item--active'
     : ' ';
@@ -11,7 +13,7 @@ export const createCardTemplate = (card) => {
     ? 'film-card__controls-item--active'
     : ' ';
 
-  return `<article class="film-card">
+  return `<article class="film-card" data-id="${id}">
           <h3 class="film-card__title">${title}</h3>
           <p class="film-card__rating">${ratio}</p>
           <p class="film-card__info">
@@ -29,3 +31,26 @@ export const createCardTemplate = (card) => {
           </div>
         </article>`;
 };
+
+export default class Card {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createCardTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

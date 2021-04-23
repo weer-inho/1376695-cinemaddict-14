@@ -79,3 +79,9 @@ export const ageRatings = [
   '13+',
   '18+',
 ];
+
+export const constsForSort = {
+  defaultSort: 'Sort by default',
+  dateSort: 'Sort by date',
+  ratingSort: 'Sort by rating',
+};
