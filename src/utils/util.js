@@ -50,16 +50,6 @@ function random(arr) {
   return arr[getRandomInt(0, arr.length - 1)];
 }
 
-const compare = (a, b, property) => {
-  if (a.property < b.property) {
-    return -1;
-  }
-  if (a.property > b.property) {
-    return 1;
-  }
-  return 0;
-};
-
 function randoms(arr) {
   const arrayLength = getRandomInt(1, arr.length);
   const result = [];
@@ -76,7 +66,6 @@ export {
   getRandomArrayElement,
   randoms,
   renderTemplate,
-  compare,
   createElement,
   renderPosition,
   renderElement
