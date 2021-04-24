@@ -7,12 +7,12 @@ import FilmsListView from './view/films-list.js';
 import MoviesNumberView from './view/movies-number.js';
 import PopupView from './view/popup.js';
 import ShowMoreButtonView from './view/show-more-button.js';
+import NoCardsView from './view/list-empty.js';
 import {generateCard} from './mock/card.js';
 import {renderElement, renderPosition} from './utils/util.js';
 import {drawFilmCards} from './utils/draw-film-cards.js';
 import {sortCards, constsForSort} from './view/sorting.js';
 import {navigateCards} from './view/navigating.js';
-// import {cardsListHandler} from './view/cards-list-handler.js';
 
 const ALL_MOVIES = 19;
 const MOVIES_PER_STEP = 5;
@@ -22,14 +22,21 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterStatElement = document.querySelector('.footer__statistics');
 
-renderElement(siteHeaderElement, new UserRankView().getElement(), renderPosition.BEFOREEND);
+
 renderElement(siteMainElement, new NavMenuView(cards).getElement(), renderPosition.BEFOREEND);
-renderElement(siteMainElement, new SortMenuView().getElement(), renderPosition.BEFOREEND);
+
+if (cards.length === 0) {
+  renderElement(siteMainElement, new NoCardsView().getElement(), renderPosition.BEFOREEND);
+} else {
+  renderElement(siteHeaderElement, new UserRankView().getElement(), renderPosition.BEFOREEND);
+  renderElement(siteMainElement, new SortMenuView().getElement(), renderPosition.BEFOREEND);
+}
+
 renderElement(siteMainElement, new SectionFilmsView().getElement(), renderPosition.BEFOREEND);
 
 const sectionFilms = siteMainElement.querySelector('.films');
 renderElement(sectionFilms, new FilmsListView().getElement(), renderPosition.BEFOREEND);
-renderElement(siteFooterStatElement, new MoviesNumberView().getElement(), renderPosition.BEFOREEND);
+renderElement(siteFooterStatElement, new MoviesNumberView(cards.length).getElement(), renderPosition.BEFOREEND);
 
 const filmsListContainers = document.querySelector('.films-list__container');
 const mainNavigationElement = document.querySelector('.main-navigation');
@@ -100,6 +107,17 @@ const cardsListHandler = (evt) => {
   renderElement(pageBody, cardElement, renderPosition.BEFOREEND);
   pageBody.classList.add('hide-overflow');
 
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      cardElement.remove();
+      cardComponent.removeElement();
+      pageBody.classList.remove('hide-overflow');
+      document.removeEventListener('keydown', onEscKeyDown);
+    }
+  };
+
+  document.addEventListener('keydown', onEscKeyDown);
   cardElement.querySelector('.film-details__close-btn').addEventListener('click', () => {
     // удаляем элемент из разметки
     cardElement.remove();

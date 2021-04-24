@@ -1,17 +1,16 @@
 import {createElement} from '../utils/util.js';
 
-const createMoviesNumberTemplate = (length) => {
-  return `<p>${length} movies inside</p>`;
+const createEmptyList = () => {
+  return '<h2 class="films-list__title">There are no movies in our database</h2>';
 };
 
-export default class MoviesNumber {
-  constructor(length) {
-    this._length = length;
+export default class NoCards {
+  constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createMoviesNumberTemplate(this._length);
+    return createEmptyList();
   }
 
   getElement() {
