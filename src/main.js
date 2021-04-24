@@ -85,16 +85,6 @@ if (cards.length > MOVIES_PER_STEP) {
   });
 }
 
-const onEscKeyDown = (evt) => {
-  if (evt.key === 'Escape' || evt.key === 'Esc') {
-    evt.preventDefault();
-    // replaceFormToCard();
-    cardElement.remove();
-    cardComponent.removeElement();
-    document.removeEventListener('keydown', onEscKeyDown);
-  }
-}
-
 const cardsListHandler = (evt) => {
   evt.preventDefault();
   // target = ссылка на объект,
