@@ -1,22 +1,24 @@
+import {drawFilmCards} from '../utils/draw-film-cards.js';
+
 export const constsForSort = {
   defaultSort: 'Sort by default',
   dateSort: 'Sort by date',
   ratingSort: 'Sort by rating',
 };
 
-export const sortCards = (evt, array, count, container, callback, sortObject) => {
+export const sortCards = (evt, array, container, wrapper) => {
   switch(evt.target.innerText) {
-    case sortObject.defaultSort: {
-      callback(
+    case constsForSort.defaultSort: {
+      drawFilmCards(
         array,
-        count,
         container,
+        wrapper,
       );
       return;
     }
 
-    case sortObject.dateSort: {
-      callback(
+    case constsForSort.dateSort: {
+      drawFilmCards(
         [...array].sort((a, b) => {
           if (a.date < b.date) {
             return -1;
@@ -26,14 +28,14 @@ export const sortCards = (evt, array, count, container, callback, sortObject) =>
           }
           return 0;
         }),
-        count,
         container,
+        wrapper,
       );
       return;
     }
 
-    case sortObject.ratingSort: {
-      callback(
+    case constsForSort.ratingSort: {
+      drawFilmCards(
         [...array].sort((a, b) => {
           if (a.ratio < b.ratio) {
             return -1;
@@ -43,8 +45,8 @@ export const sortCards = (evt, array, count, container, callback, sortObject) =>
           }
           return 0;
         }),
-        count,
         container,
+        wrapper,
       );
       return;
     }

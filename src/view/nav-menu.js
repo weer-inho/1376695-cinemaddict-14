@@ -1,4 +1,4 @@
-import {createElement} from '../utils/util.js';
+import AbstractView from './abstract.js';
 
 export const createNavMenuTemplate = (cards) => {
   const watchlistCount = cards.filter((card) => card.isWatchlist).length;
@@ -16,25 +16,25 @@ export const createNavMenuTemplate = (cards) => {
         </nav>`;
 };
 
-export default class SiteMenu {
+export default class SiteMenu extends AbstractView {
   constructor(cards) {
+    super();
     this._cards = cards;
-    this._element = null;
+
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return createNavMenuTemplate(this._cards);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click(evt);
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().addEventListener('click', this._clickHandler);
   }
 }

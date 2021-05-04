@@ -1,4 +1,4 @@
-import {createElement} from '../utils/util.js';
+import AbstractView from './abstract.js';
 
 export const createPopupTemplate = (card) => {
   const {
@@ -148,25 +148,29 @@ export const createPopupTemplate = (card) => {
 </section>`;
 };
 
-export default class Popup {
+export default class Popup extends AbstractView {
   constructor(cards) {
+    // debugger;
+    super();
     this._cards = cards;
-    this._element = null;
+
+    this._closeButtonHandler = this._closeButtonHandler.bind(this);
   }
 
   getTemplate() {
     return createPopupTemplate(this._cards);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _closeButtonHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setCloseButtonHandler(callback) {
+    this._callback.click = callback;
+    this.getElement()
+      .querySelector('.film-details__close-btn')
+      .addEventListener('click', this._closeButtonHandler);
   }
 }
+

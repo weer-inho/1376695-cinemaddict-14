@@ -1,28 +1,16 @@
-import {createElement} from '../utils/util.js';
+import AbstractView from './abstract.js';
 
 const createMoviesNumberTemplate = (length) => {
   return `<p>${length} movies inside</p>`;
 };
 
-export default class MoviesNumber {
+export default class MoviesNumber extends AbstractView {
   constructor(length) {
+    super();
     this._length = length;
-    this._element = null;
   }
 
   getTemplate() {
     return createMoviesNumberTemplate(this._length);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
