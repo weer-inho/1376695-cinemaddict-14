@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {titles, genres, posters, descriptions, directors, writers, actors, countries, ageRatings} from'./const.js';
-import {getRandomIntegerFloat, getRandomArrayElement, randoms} from '../utils/util.js';
+import {getRandomIntegerFloat, getRandomArrayElement, randoms} from '../utils/common.js';
 
 
 const generateDate = () => {

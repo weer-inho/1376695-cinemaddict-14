@@ -1,37 +1,39 @@
-export const navigateCards = (evt, array, count, container, callback) => {
+import {drawFilmCards} from '../utils/draw-film-cards.js';
+
+export const navigateCards = (evt, array, container, wrapper) => {
   switch(evt.target.hash) {
     case '#all': {
-      callback(
+      drawFilmCards(
         array,
-        count,
         container,
+        wrapper,
       );
       return;
     }
 
     case '#watchlist': {
-      callback(
+      drawFilmCards(
         array.filter((card) => card.isWatchlist),
-        count,
         container,
+        wrapper,
       );
       return;
     }
 
     case '#history': {
-      callback(
+      drawFilmCards(
         array.filter((card) => card.isWatched),
-        count,
         container,
+        wrapper,
       );
       return;
     }
 
     case '#favorites': {
-      callback(
+      drawFilmCards(
         array.filter((card) => card.isFavorite),
-        count,
         container,
+        wrapper,
       );
       return;
     }

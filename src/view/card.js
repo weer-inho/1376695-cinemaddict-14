@@ -1,4 +1,4 @@
-import {createElement} from '../utils/util.js';
+import AbstractView from './abstract.js';
 
 export const createCardTemplate = (card) => {
   const {id, title, ratio, year, duration, genres, poster, description, comments, isWatchlist, isFavorite, isWatched} = card;
@@ -32,25 +32,13 @@ export const createCardTemplate = (card) => {
         </article>`;
 };
 
-export default class Card {
+export default class Card extends AbstractView {
   constructor(card) {
+    super();
     this._card = card;
-    this._element = null;
   }
 
   getTemplate() {
     return createCardTemplate(this._card);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
