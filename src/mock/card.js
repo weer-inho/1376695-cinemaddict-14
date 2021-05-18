@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {titles, genres, posters, descriptions, directors, writers, actors, countries, ageRatings} from'./const.js';
-import {getRandomIntegerFloat, getRandomArrayElement, randoms} from '../utils/common.js';
+import {getRandomIntegerFloat, getRandomArrayElement, getRandomArray} from '../utils/common.js';
 
 
 const generateDate = () => {
@@ -18,18 +18,18 @@ export const generateCard = () => {
   return {
     id: generateId(),
     title: getRandomArrayElement(titles),
-    genres: randoms(genres),
+    genres: getRandomArray(genres),
     ratio: getRandomIntegerFloat(4, 9.9, 1),
     date,
     releaseDate: dayjs(date).format('MMM D, YYYY'),
     year: dayjs(date).format('YYYY'),
     comments: getRandomIntegerFloat(1, 5),
     poster: `./images/posters/${posterName}`,
-    description: randoms(descriptions),
+    description: getRandomArray(descriptions),
     duration: `${getRandomIntegerFloat(1,3)}h ${getRandomIntegerFloat(1,59)}m`,
     director: getRandomArrayElement(directors),
-    writers: randoms(writers),
-    actors: randoms(actors),
+    writers: getRandomArray(writers),
+    actors: getRandomArray(actors),
     country: getRandomArrayElement(countries),
     ageRating: getRandomArrayElement(ageRatings),
     isWatchlist: Boolean(getRandomIntegerFloat(0, 1)),

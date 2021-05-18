@@ -149,16 +149,18 @@ export const createPopupTemplate = (card) => {
 };
 
 export default class Popup extends AbstractView {
-  constructor(cards) {
-    // debugger;
+  constructor(card) {
     super();
-    this._cards = cards;
+    this._card = card;
 
     this._closeButtonHandler = this._closeButtonHandler.bind(this);
+    this._favoriteButtonHandler = this._favoriteButtonHandler.bind(this);
+    this._watchedButtonHandler = this._watchedButtonHandler.bind(this);
+    this._wathlistButtonHandler = this._wathlistButtonHandler.bind(this);
   }
 
   getTemplate() {
-    return createPopupTemplate(this._cards);
+    return createPopupTemplate(this._card);
   }
 
   _closeButtonHandler(evt) {
@@ -171,6 +173,42 @@ export default class Popup extends AbstractView {
     this.getElement()
       .querySelector('.film-details__close-btn')
       .addEventListener('click', this._closeButtonHandler);
+  }
+
+  _favoriteButtonHandler() {
+    // evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  setFavoriteButtonHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement()
+      .querySelector('.film-details__control-label--favorite')
+      .addEventListener('click', this._favoriteButtonHandler);
+  }
+
+  _watchedButtonHandler() {
+    // evt.preventDefault();
+    this._callback.watchedClick();
+  }
+
+  setWatchedButtonHandler(callback) {
+    this._callback.watchedClick = callback;
+    this.getElement()
+      .querySelector('.film-details__control-label--watched')
+      .addEventListener('click', this._watchedButtonHandler);
+  }
+
+  _wathlistButtonHandler() {
+    // evt.preventDefault();
+    this._callback.wathlistClick();
+  }
+
+  setWatchlistButtonHandler(callback) {
+    this._callback.wathlistClick = callback;
+    this.getElement()
+      .querySelector('.film-details__control-label--watchlist')
+      .addEventListener('click', this._wathlistButtonHandler);
   }
 }
 
