@@ -82,7 +82,6 @@ export default class MainPresenter {
     container.innerText = '';
     const MOVIES_PER_STEP = 5;
 
-    // counter
     const limit = Math.min(films.length, MOVIES_PER_STEP);
 
     for (let i = 0; i < limit; i++) {
@@ -114,7 +113,6 @@ export default class MainPresenter {
   }
 
   _sortMenu() {
-    // логика сортировки
     this._sortComponent.setClickHandler((evt) => {
       if (evt.target.tagName !== 'A') {
         return;
@@ -141,16 +139,6 @@ export default class MainPresenter {
       );
     });
   }
-
-  // _clearFilmsList() {
-  //   Object
-  //     .values(this._cardPresenter)
-  //     .forEach((presenter) => presenter.remove(cardView));
-  //   this._cardPresenter = {};
-  //   renderTemplateedCardCount = MOVIES_PER_STEP;
-  //   remove(buttonComponent);
-  //   remove(loadMoreButton);
-  // }
 
   _renderPopup() {
     const cardsListHandler = (evt) => {

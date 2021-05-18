@@ -6,10 +6,9 @@ import MainPresenter from './presenter/main-presenter.js';
 
 const ALL_MOVIES = 15;
 const cards = new Array(ALL_MOVIES).fill().map(generateCard);
-const pageBody = document.querySelector('body');
-const siteHeaderElement = pageBody.querySelector('.header');
-const siteMainElement = pageBody.querySelector('.main');
-const siteFooterStatElement = pageBody.querySelector('.footer__statistics');
+const siteHeaderElement = document.querySelector('.header');
+const siteMainElement = document.querySelector('.main');
+const siteFooterStatElement = document.querySelector('.footer__statistics');
 
 const mainPresenter = new MainPresenter(siteMainElement);
 mainPresenter.init(cards);
