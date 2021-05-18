@@ -19,6 +19,7 @@ export default class MainPresenter {
     this._sortComponent = new SortMenuView();
     this._sectionFilmsComponent = new SectionFilmsView();
     this._sectionFilmsListComponent = new FilmsListView();
+    this._buttonComponent = null;
     this._cardPresenter = {};
 
     this._handleCardChange = this._handleCardChange.bind(this);
@@ -28,6 +29,7 @@ export default class MainPresenter {
   init(cards) {
     this._cards = cards.slice();
 
+    this._MOVIES_PER_STEP = 5;
     this._renderNav(this._cards);
     this._renderBoard();
     this._sectionFilms = this._mainContainer.querySelector('.films');
@@ -78,33 +80,40 @@ export default class MainPresenter {
     this._cardPresenter[card.id] = cardPresenter;
   }
 
-  renderCards(films, container, wrapper) {
+  _clearTaskList(container) {
+    Object
+      .values(this._cardPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._cardPresenter = {};
     container.innerText = '';
-    const MOVIES_PER_STEP = 5;
+  }
 
-    const limit = Math.min(films.length, MOVIES_PER_STEP);
+  renderCards(films, container, wrapper) {
+    this._clearTaskList(container);
+
+    const limit = Math.min(films.length, this._MOVIES_PER_STEP);
 
     for (let i = 0; i < limit; i++) {
       this._renderCard(films[i]);
     }
 
-    if (films.length > MOVIES_PER_STEP) {
-      let renderTemplateedCardCount = MOVIES_PER_STEP;
+    if (films.length > this._MOVIES_PER_STEP) {
+      let renderTemplatedCardCount = this._MOVIES_PER_STEP;
 
       if (!this._mainContainer.querySelector('.films-list__show-more')) {
-        const buttonComponent = new ShowMoreButtonView();
-        render(wrapper, buttonComponent.getElement());
+        this._buttonComponent = new ShowMoreButtonView();
+        render(wrapper, this._buttonComponent);
 
         const loadMoreButton = wrapper.querySelector('.films-list__show-more');
 
-        buttonComponent.setButtonShowMore(() => {
+        this._buttonComponent.setButtonShowMore(() => {
           films
-            .slice(renderTemplateedCardCount, renderTemplateedCardCount + MOVIES_PER_STEP)
+            .slice(renderTemplatedCardCount, renderTemplatedCardCount + this._MOVIES_PER_STEP)
             .forEach((card) => this._renderCard(card));
 
-          renderTemplateedCardCount += MOVIES_PER_STEP;
+          renderTemplatedCardCount += this._MOVIES_PER_STEP;
 
-          if (renderTemplateedCardCount >= films.length) {
+          if (renderTemplatedCardCount >= films.length) {
             loadMoreButton.remove();
           }
         });
