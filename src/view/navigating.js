@@ -1,41 +1,20 @@
-import {drawFilmCards} from '../utils/draw-film-cards.js';
+export const navigateCards = (evt, array) => {
 
-export const navigateCards = (evt, array, container, wrapper) => {
   switch(evt.target.hash) {
     case '#all': {
-      drawFilmCards(
-        array,
-        container,
-        wrapper,
-      );
-      return;
+      return array;
     }
 
     case '#watchlist': {
-      drawFilmCards(
-        array.filter((card) => card.isWatchlist),
-        container,
-        wrapper,
-      );
-      return;
+      return array.filter((card) => card.isWatchlist);
     }
 
     case '#history': {
-      drawFilmCards(
-        array.filter((card) => card.isWatched),
-        container,
-        wrapper,
-      );
-      return;
+      return array.filter((card) => card.isWatched);
     }
 
     case '#favorites': {
-      drawFilmCards(
-        array.filter((card) => card.isFavorite),
-        container,
-        wrapper,
-      );
-      return;
+      return array.filter((card) => card.isFavorite);
     }
 
     default: {

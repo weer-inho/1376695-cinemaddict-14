@@ -16,7 +16,7 @@ export const getRandomArrayElement = (elements) => {
 // и здесь критерии нарушать можно
 // поэтому я оторвался по полной:)
 export function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 export function random(arr) {
@@ -33,3 +33,17 @@ export function randoms(arr) {
 
   return result;
 }
+
+export const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
