@@ -36,7 +36,6 @@ export default class Card extends AbstractView {
   constructor(card) {
     super();
     this._card = card;
-
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);

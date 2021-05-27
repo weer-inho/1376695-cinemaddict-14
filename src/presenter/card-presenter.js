@@ -14,6 +14,7 @@ export default class Card {
   }
 
   init(card) {
+    // debugger;
     this._card = card;
 
     const prevCardComponent = this._cardComponent;

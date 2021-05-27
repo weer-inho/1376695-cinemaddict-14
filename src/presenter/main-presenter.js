@@ -72,7 +72,10 @@ export default class MainPresenter {
   _handleCardChange(updatedCard) {
     this._cards = updateItem(this._cards, updatedCard);
     this._cardPresenter[updatedCard.id].init(updatedCard);
+
   }
+
+
 
   _renderCard(card) {
     const cardPresenter = new CardPresenter(this._mainContainers, this._handleCardChange);
@@ -167,6 +170,7 @@ export default class MainPresenter {
 
       const cardId = target.closest('.film-card').dataset.id;
       const card = this._cards.find((card) => cardId === card.id);
+
       const cardComponent = new PopupView(card);
       const cardElement = cardComponent.getElement();
       render(pageBody, cardElement);
@@ -192,9 +196,18 @@ export default class MainPresenter {
       cardComponent.setCloseButtonHandler(() => {
         closePopup();
       });
-      cardComponent.setFavoriteButtonHandler(() => this._handleCardChange({...card, isFavorite: !card.isFavorite}));
-      cardComponent.setWatchedButtonHandler(() => this._handleCardChange({...card, isWatched: !card.isWatched}));
-      cardComponent.setWatchlistButtonHandler(() => this._handleCardChange({...card, isWatchlist: !card.isWatchlist}));
+      cardComponent.setFavoriteButtonHandler(() => {
+        const currentCard = this._cards.find((card) => cardId === card.id);
+        this._handleCardChange({...currentCard, isFavorite: !currentCard.isFavorite});
+      });
+      cardComponent.setWatchedButtonHandler(() => {
+        const currentCard = this._cards.find((card) => cardId === card.id)
+        return this._handleCardChange({...currentCard, isWatched: !currentCard.isWatched
+        })});
+      cardComponent.setWatchlistButtonHandler(() => {
+          const currentCard = this._cards.find((card) => cardId === card.id)
+          return this._handleCardChange({...currentCard, isWatchlist: !currentCard.isWatchlist
+        })});
     };
 
     this._sectionFilmsListComponent.setClickHandler((evt) => cardsListHandler(evt));

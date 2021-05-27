@@ -1,4 +1,4 @@
-import AbstractView from './abstract.js';
+import SmartView from '../view/smart.js';
 
 export const createPopupTemplate = (card) => {
   const {
@@ -18,17 +18,6 @@ export const createPopupTemplate = (card) => {
     isFavorite,
     isWatched,
   } = card;
-
-  const watchListClass = isWatchlist !== false
-    ? 'checked'
-    : ' ';
-  const favoriteClass = isFavorite !== false
-    ? 'checked'
-    : ' ';
-
-  const watchedClass = isWatched !== false
-    ? 'checked'
-    : ' ';
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -96,13 +85,13 @@ export const createPopupTemplate = (card) => {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden " id="watchlist" name="watchlist" ${watchListClass}>
+        <input type="checkbox" class="film-details__control-input visually-hidden " id="watchlist" name="watchlist" ${isWatchlist ? 'checked' : ''}>
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watchedClass}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatched ? 'checked' : ''}>
         <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteClass}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? 'checked' : ''}>
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
     </div>
@@ -148,7 +137,7 @@ export const createPopupTemplate = (card) => {
 </section>`;
 };
 
-export default class Popup extends AbstractView {
+export default class Popup extends SmartView {
   constructor(card) {
     super();
     this._card = card;
@@ -157,15 +146,51 @@ export default class Popup extends AbstractView {
     this._favoriteButtonHandler = this._favoriteButtonHandler.bind(this);
     this._watchedButtonHandler = this._watchedButtonHandler.bind(this);
     this._wathlistButtonHandler = this._wathlistButtonHandler.bind(this);
+    this._emojiSmileHandler = this._emojiSmileHandler.bind(this);
+    this._emojiSleepHandler = this._emojiSleepHandler.bind(this);
+    this._emojiPukeHandler = this._emojiPukeHandler.bind(this);
+    this._emojiAngryHandler = this._emojiAngryHandler.bind(this);
+
+    this.getElement()
+      .querySelector('label[for="emoji-smile"]')
+      .addEventListener('click', this._emojiSmileHandler);
+    this.getElement()
+      .querySelector('label[for="emoji-sleeping"]')
+      .addEventListener('click', this._emojiSleepHandler);
+    this.getElement()
+      .querySelector('label[for="emoji-puke"]')
+      .addEventListener('click', this._emojiPukeHandler);
+    this.getElement()
+      .querySelector('label[for="emoji-angry"]')
+      .addEventListener('click', this._emojiAngryHandler);
   }
 
   getTemplate() {
     return createPopupTemplate(this._card);
   }
 
+  _emojiSmileHandler(evt) {
+    evt.preventDefault();
+    console.log('НАЖАЛ УЛЫБКУ');
+  }
+  _emojiSleepHandler(evt) {
+    evt.preventDefault();
+    console.log('НАЖАЛ СПАТЬ');
+  }
+  _emojiAngryHandler(evt) {
+    evt.preventDefault();
+    console.log('НАЖАЛ ЗЛОСТЬ');
+  }
+  _emojiPukeHandler(evt) {
+    evt.preventDefault();
+    console.log('НАЖАЛ РЫГНУТЬ');
+  }
+
+
   _closeButtonHandler(evt) {
     evt.preventDefault();
     this._callback.click();
+    console.log('закрылся');
   }
 
   setCloseButtonHandler(callback) {
@@ -176,7 +201,6 @@ export default class Popup extends AbstractView {
   }
 
   _favoriteButtonHandler() {
-    // evt.preventDefault();
     this._callback.favoriteClick();
   }
 
@@ -188,8 +212,8 @@ export default class Popup extends AbstractView {
   }
 
   _watchedButtonHandler() {
-    // evt.preventDefault();
     this._callback.watchedClick();
+    console.log('перерисовался')
   }
 
   setWatchedButtonHandler(callback) {
@@ -200,7 +224,6 @@ export default class Popup extends AbstractView {
   }
 
   _wathlistButtonHandler() {
-    // evt.preventDefault();
     this._callback.wathlistClick();
   }
 
