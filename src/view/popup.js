@@ -103,7 +103,9 @@ export const createPopupTemplate = (card) => {
         <ul class="film-details__comments-list"></ul>
 
         <div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label"></div>
+          <div class="film-details__add-emoji-label">
+            <img class="film-details__emoji-img visually-hidden" width="55" height="55" alt="emoji">
+          </div>
 
           <label class="film-details__comment-label">
             <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -146,51 +148,42 @@ export default class Popup extends SmartView {
     this._favoriteButtonHandler = this._favoriteButtonHandler.bind(this);
     this._watchedButtonHandler = this._watchedButtonHandler.bind(this);
     this._wathlistButtonHandler = this._wathlistButtonHandler.bind(this);
-    this._emojiSmileHandler = this._emojiSmileHandler.bind(this);
-    this._emojiSleepHandler = this._emojiSleepHandler.bind(this);
-    this._emojiPukeHandler = this._emojiPukeHandler.bind(this);
-    this._emojiAngryHandler = this._emojiAngryHandler.bind(this);
+    this._emojiButtonHandler = this._emojiButtonHandler.bind(this);
 
-    this.getElement()
-      .querySelector('label[for="emoji-smile"]')
-      .addEventListener('click', this._emojiSmileHandler);
-    this.getElement()
-      .querySelector('label[for="emoji-sleeping"]')
-      .addEventListener('click', this._emojiSleepHandler);
-    this.getElement()
-      .querySelector('label[for="emoji-puke"]')
-      .addEventListener('click', this._emojiPukeHandler);
-    this.getElement()
-      .querySelector('label[for="emoji-angry"]')
-      .addEventListener('click', this._emojiAngryHandler);
   }
 
   getTemplate() {
     return createPopupTemplate(this._card);
   }
 
-  _emojiSmileHandler(evt) {
-    evt.preventDefault();
-    console.log('НАЖАЛ УЛЫБКУ');
+  updatedData(value) {
+    const img = this.getElement().querySelector('.film-details__emoji-img');
+    const textarea = this.getElement().querySelector('.film-details__comment-input');
+    img.classList.remove('visually-hidden');
+    switch(value) {
+      case 'smile':
+        img.src = './images/emoji/smile.png';
+        textarea.value = 'Great movie!';
+        break;
+      case 'sleeping':
+        img.src = './images/emoji/sleeping.png';
+        textarea.value = 'God, ama sleepy from the first minute...';
+        break;
+      case 'puke':
+        img.src = './images/emoji/puke.png';
+        textarea.value = 'Disgusting. What did I just watch?';
+        break;
+      case 'angry': {
+        img.src = './images/emoji/angry.png';
+        textarea.value = 'How I hate this movie!';
+        break;
+      }
+    }
   }
-  _emojiSleepHandler(evt) {
-    evt.preventDefault();
-    console.log('НАЖАЛ СПАТЬ');
-  }
-  _emojiAngryHandler(evt) {
-    evt.preventDefault();
-    console.log('НАЖАЛ ЗЛОСТЬ');
-  }
-  _emojiPukeHandler(evt) {
-    evt.preventDefault();
-    console.log('НАЖАЛ РЫГНУТЬ');
-  }
-
 
   _closeButtonHandler(evt) {
     evt.preventDefault();
     this._callback.click();
-    console.log('закрылся');
   }
 
   setCloseButtonHandler(callback) {
@@ -213,7 +206,6 @@ export default class Popup extends SmartView {
 
   _watchedButtonHandler() {
     this._callback.watchedClick();
-    console.log('перерисовался')
   }
 
   setWatchedButtonHandler(callback) {
@@ -233,5 +225,20 @@ export default class Popup extends SmartView {
       .querySelector('.film-details__control-label--watchlist')
       .addEventListener('click', this._wathlistButtonHandler);
   }
-}
 
+  _emojiButtonHandler(evt) {
+    // evt.preventDefault();
+    // const target = evt.target;
+    const value = [...evt.currentTarget.querySelectorAll('input')]
+      .filter((element) => element.checked)
+      .map((element) => element.value)[0];
+    this._callback.emojiClick(value);
+  }
+
+  setEmojiButtonHandler(callback) {
+    this._callback.emojiClick = callback;
+    this.getElement()
+      .querySelector('.film-details__emoji-list')
+      .addEventListener('change', this._emojiButtonHandler);
+  }
+}

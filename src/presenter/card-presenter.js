@@ -24,7 +24,6 @@ export default class Card {
     this._cardComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._cardComponent.setWatchlistClickHandler(this._handleWatchlistClick);
 
-
     if (prevCardComponent === null) {
       render(this._filmsListContainer, this._cardComponent);
       return;

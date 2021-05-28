@@ -15,7 +15,7 @@ export default class Smart extends AbstractView {
     this._card = Object.assign(
       {},
       this._card,
-      update
+      update,
     );
 
     this.updateElement();

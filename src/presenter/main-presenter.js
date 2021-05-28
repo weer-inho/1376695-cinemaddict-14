@@ -8,7 +8,7 @@ import {navigateCards} from '../view/navigating.js';
 import {render} from '../utils/render.js';
 import CardPresenter from '../presenter/card-presenter.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
-import PopupView from '../view/popup.js';
+import PopupPresenter from '../presenter/popup-presenter.js';
 import {updateItem} from '../utils/common.js';
 
 export default class MainPresenter {
@@ -32,12 +32,13 @@ export default class MainPresenter {
     this._MOVIES_PER_STEP = 5;
     this._renderNav(this._cards);
     this._renderBoard();
+    this._pageBody = document.querySelector('body');
     this._sectionFilms = this._mainContainer.querySelector('.films');
     this._mainContainers = document.querySelector('.films-list__container');
     this.renderCards(this._cards, this._mainContainers, this._sectionFilms);
     this._sortMenu();
     this._navMenu();
-    this._renderPopup();
+    this._handlePopup();
   }
 
   _renderNav(cards) {
@@ -72,15 +73,17 @@ export default class MainPresenter {
   _handleCardChange(updatedCard) {
     this._cards = updateItem(this._cards, updatedCard);
     this._cardPresenter[updatedCard.id].init(updatedCard);
-
   }
-
-
 
   _renderCard(card) {
     const cardPresenter = new CardPresenter(this._mainContainers, this._handleCardChange);
     cardPresenter.init(card);
     this._cardPresenter[card.id] = cardPresenter;
+  }
+
+  _renderPopup(card, changeData) {
+    const popupPresenter = new PopupPresenter(this._pageBody, changeData);
+    popupPresenter.init(card);
   }
 
   _clearTaskList(container) {
@@ -152,10 +155,9 @@ export default class MainPresenter {
     });
   }
 
-  _renderPopup() {
+  _handlePopup() {
     const cardsListHandler = (evt) => {
       evt.preventDefault();
-      const pageBody = document.querySelector('body');
       const target = evt.target;
       const isTargetCorrect = target.classList.contains('film-card__title')
         || target.classList.contains('film-card__poster')
@@ -164,52 +166,26 @@ export default class MainPresenter {
         return false;
       }
 
-      if (this._popupStatus === true) {
-        pageBody.querySelector('.film-details').remove();
-      }
-
       const cardId = target.closest('.film-card').dataset.id;
       const card = this._cards.find((card) => cardId === card.id);
 
-      const cardComponent = new PopupView(card);
-      const cardElement = cardComponent.getElement();
-      render(pageBody, cardElement);
-      this._popupStatus = true;
-      pageBody.classList.add('hide-overflow');
+      this._renderPopup(card, this._handleCardChange);
 
-      const closePopup = () => {
-        cardElement.remove();
-        cardComponent.removeElement();
-        pageBody.classList.remove('hide-overflow');
-        this._popupStatus = false;
-      };
+      // popupPresenter.setFavoriteButtonHandler(() => {
+      //   const currentCard = this._cards.find((card) => cardId === card.id);
+      //   this._handleCardChange({...currentCard, isFavorite: !currentCard.isFavorite});
+      // });
+      // cardComponent.setWatchedButtonHandler(() => {
+      //   const currentCard = this._cards.find((card) => cardId === card.id)
+      //   return this._handleCardChange({...currentCard, isWatched: !currentCard.isWatched
+      //   })});
+      // cardComponent.setWatchlistButtonHandler(() => {
+      //     const currentCard = this._cards.find((card) => cardId === card.id)
+      //     return this._handleCardChange({...currentCard, isWatchlist: !currentCard.isWatchlist
+      //   })});
 
-      const onEscKeyDown = (evt) => {
-        if (evt.key === 'Escape' || evt.key === 'Esc') {
-          evt.preventDefault();
-          closePopup();
-          document.removeEventListener('keydown', onEscKeyDown);
-        }
-      };
-
-      document.addEventListener('keydown', onEscKeyDown);
-      cardComponent.setCloseButtonHandler(() => {
-        closePopup();
-      });
-      cardComponent.setFavoriteButtonHandler(() => {
-        const currentCard = this._cards.find((card) => cardId === card.id);
-        this._handleCardChange({...currentCard, isFavorite: !currentCard.isFavorite});
-      });
-      cardComponent.setWatchedButtonHandler(() => {
-        const currentCard = this._cards.find((card) => cardId === card.id)
-        return this._handleCardChange({...currentCard, isWatched: !currentCard.isWatched
-        })});
-      cardComponent.setWatchlistButtonHandler(() => {
-          const currentCard = this._cards.find((card) => cardId === card.id)
-          return this._handleCardChange({...currentCard, isWatchlist: !currentCard.isWatchlist
-        })});
     };
 
-    this._sectionFilmsListComponent.setClickHandler((evt) => cardsListHandler(evt));
+    this._sectionFilmsListComponent.setClickHandler(cardsListHandler);
   }
 }
