@@ -1,4 +1,4 @@
-import AbstractView from './abstract.js';
+import SmartView from '../view/smart.js';
 
 export const createPopupTemplate = (card) => {
   const {
@@ -18,17 +18,6 @@ export const createPopupTemplate = (card) => {
     isFavorite,
     isWatched,
   } = card;
-
-  const watchListClass = isWatchlist !== false
-    ? 'checked'
-    : ' ';
-  const favoriteClass = isFavorite !== false
-    ? 'checked'
-    : ' ';
-
-  const watchedClass = isWatched !== false
-    ? 'checked'
-    : ' ';
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -96,13 +85,13 @@ export const createPopupTemplate = (card) => {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden " id="watchlist" name="watchlist" ${watchListClass}>
+        <input type="checkbox" class="film-details__control-input visually-hidden " id="watchlist" name="watchlist" ${isWatchlist ? 'checked' : ''}>
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watchedClass}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatched ? 'checked' : ''}>
         <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteClass}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? 'checked' : ''}>
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
     </div>
@@ -114,7 +103,9 @@ export const createPopupTemplate = (card) => {
         <ul class="film-details__comments-list"></ul>
 
         <div class="film-details__new-comment">
-          <div class="film-details__add-emoji-label"></div>
+          <div class="film-details__add-emoji-label">
+            <img class="film-details__emoji-img visually-hidden" width="55" height="55" alt="emoji">
+          </div>
 
           <label class="film-details__comment-label">
             <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -148,7 +139,7 @@ export const createPopupTemplate = (card) => {
 </section>`;
 };
 
-export default class Popup extends AbstractView {
+export default class Popup extends SmartView {
   constructor(card) {
     super();
     this._card = card;
@@ -157,10 +148,37 @@ export default class Popup extends AbstractView {
     this._favoriteButtonHandler = this._favoriteButtonHandler.bind(this);
     this._watchedButtonHandler = this._watchedButtonHandler.bind(this);
     this._wathlistButtonHandler = this._wathlistButtonHandler.bind(this);
+    this._emojiButtonHandler = this._emojiButtonHandler.bind(this);
+
   }
 
   getTemplate() {
     return createPopupTemplate(this._card);
+  }
+
+  updatedData(value) {
+    const img = this.getElement().querySelector('.film-details__emoji-img');
+    const textarea = this.getElement().querySelector('.film-details__comment-input');
+    img.classList.remove('visually-hidden');
+    switch(value) {
+      case 'smile':
+        img.src = './images/emoji/smile.png';
+        textarea.value = 'Great movie!';
+        break;
+      case 'sleeping':
+        img.src = './images/emoji/sleeping.png';
+        textarea.value = 'God, ama sleepy from the first minute...';
+        break;
+      case 'puke':
+        img.src = './images/emoji/puke.png';
+        textarea.value = 'Disgusting. What did I just watch?';
+        break;
+      case 'angry': {
+        img.src = './images/emoji/angry.png';
+        textarea.value = 'How I hate this movie!';
+        break;
+      }
+    }
   }
 
   _closeButtonHandler(evt) {
@@ -176,7 +194,6 @@ export default class Popup extends AbstractView {
   }
 
   _favoriteButtonHandler() {
-    // evt.preventDefault();
     this._callback.favoriteClick();
   }
 
@@ -188,7 +205,6 @@ export default class Popup extends AbstractView {
   }
 
   _watchedButtonHandler() {
-    // evt.preventDefault();
     this._callback.watchedClick();
   }
 
@@ -200,7 +216,6 @@ export default class Popup extends AbstractView {
   }
 
   _wathlistButtonHandler() {
-    // evt.preventDefault();
     this._callback.wathlistClick();
   }
 
@@ -210,5 +225,20 @@ export default class Popup extends AbstractView {
       .querySelector('.film-details__control-label--watchlist')
       .addEventListener('click', this._wathlistButtonHandler);
   }
-}
 
+  _emojiButtonHandler(evt) {
+    // evt.preventDefault();
+    // const target = evt.target;
+    const value = [...evt.currentTarget.querySelectorAll('input')]
+      .filter((element) => element.checked)
+      .map((element) => element.value)[0];
+    this._callback.emojiClick(value);
+  }
+
+  setEmojiButtonHandler(callback) {
+    this._callback.emojiClick = callback;
+    this.getElement()
+      .querySelector('.film-details__emoji-list')
+      .addEventListener('change', this._emojiButtonHandler);
+  }
+}

@@ -14,6 +14,7 @@ export default class Card {
   }
 
   init(card) {
+    // debugger;
     this._card = card;
 
     const prevCardComponent = this._cardComponent;
@@ -22,7 +23,6 @@ export default class Card {
     this._cardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._cardComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._cardComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-
 
     if (prevCardComponent === null) {
       render(this._filmsListContainer, this._cardComponent);
