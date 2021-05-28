@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {titles, genres, posters, descriptions, directors, writers, actors, countries, ageRatings} from'./const.js';
+import {titles, genres, posters, descriptions, directors, writers, actors, countries, ageRatings, emotions} from'./const.js';
 import {getRandomIntegerFloat, getRandomArrayElement, getRandomArray} from '../utils/common.js';
 
 
@@ -11,8 +11,24 @@ const generateDate = () => {
 
 const generateId = () => Math.random().toString();
 
+const generateComment = () => {
+  const commentDate = generateDate();
+
+  return {
+    text: getRandomArray(descriptions),
+    emoji: getRandomArrayElement(emotions),
+    author: getRandomArrayElement(writers),
+    commentDate: dayjs(commentDate).format('MM/DD/YYYY h:mm A'),
+  };
+};
+
+export const generateComments = (count) => {
+  return new Array(count).fill().map(generateComment);
+};
+
 export const generateCard = () => {
   const date = generateDate();
+  const comments = getRandomIntegerFloat(1, 5);
   const posterName = posters[getRandomIntegerFloat(0, posters.length - 1)];
 
   return {
@@ -23,7 +39,8 @@ export const generateCard = () => {
     date,
     releaseDate: dayjs(date).format('MMM D, YYYY'),
     year: dayjs(date).format('YYYY'),
-    comments: getRandomIntegerFloat(1, 5),
+    comments,
+    commentsArray: generateComments(comments),
     poster: `./images/posters/${posterName}`,
     description: getRandomArray(descriptions),
     duration: `${getRandomIntegerFloat(1,3)}h ${getRandomIntegerFloat(1,59)}m`,
@@ -37,4 +54,5 @@ export const generateCard = () => {
     isFavorite: Boolean(getRandomIntegerFloat(0, 1)),
   };
 };
+
 
