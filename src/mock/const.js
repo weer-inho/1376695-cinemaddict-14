@@ -85,3 +85,10 @@ export const constsForSort = {
   dateSort: 'Sort by date',
   ratingSort: 'Sort by rating',
 };
+
+export const emotions = [
+  'smile',
+  'sleeping',
+  'puke',
+  'angry',
+];
