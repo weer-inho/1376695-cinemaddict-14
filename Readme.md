@@ -4,6 +4,8 @@
 * Наставник: [Максим Волков](https://htmlacademy.ru/profile/id1508839).
 
 ---
+https://htmlacademy-ecmascript.github.io/1376695-cinemaddict-14/11/
+---
 
 Репозиторий создан для обучения на профессиональном курсе «[JavaScript. Архитектура клиентских приложений](https://htmlacademy.ru/intensive/ecmascript)» от [HTML Academy](https://htmlacademy.ru).
 
